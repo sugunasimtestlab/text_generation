@@ -1,0 +1,20 @@
+import pdfplumber
+
+text_blocks = []
+
+with pdfplumber.open(r"C:\Users\prajin\Desktop\task\chd127.pdf") as pdf:
+    for page_number, page in enumerate(pdf.pages, start=1):
+        page_text = f"Page {page_number}:\n\n{page.extract_text()}\n\n"
+        text_blocks.append(page_text)
+
+full_text = " \n".join(text_blocks)
+
+with (open(r"C:\Users\prajin\Desktop\task\sample_pdf.txt", "w", encoding="utf-8")) as text_file:
+    text_file.write(full_text)
+
+print("Text extraction completed. Check the output file for results.")
+
+
+
+
+ 
