@@ -1,0 +1,38 @@
+import easyocr
+import os
+
+reader = easyocr.Reader(['en'], gpu=False)
+
+image_path = r"C:\Users\prajin\Desktop\task\image.png"
+if not os.path.exists(image_path):
+    print(f"Error: File not found: {image_path}")
+else:
+    try:
+        results = reader.readtext(image_path)
+
+        lines = []
+
+        for bbox, text, _ in results:
+            x1, y1 = bbox[0]
+            matched = False
+
+            for line in lines:
+            
+                line_y = line['y']
+                if abs(y1 - line_y) < 15:  
+                    line['words'].append((x1, text))
+                    matched = True
+                    break
+
+            if not matched:
+                lines.append({'y': y1, 'words': [(x1, text)]})
+
+
+        print("Extracted Lines (Like Image Layout):\n")
+        for line in sorted(lines, key=lambda l: l['y']):
+            sorted_words = sorted(line['words'], key=lambda w: w[0])
+            full_line = " ".join(word for _, word in sorted_words)
+            print(full_line)
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
