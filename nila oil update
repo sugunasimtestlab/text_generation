@@ -1,16 +1,20 @@
+
+# NILA Herbal Hair Oil - Booking Web App (Streamlit)
+# To run this app: streamlit run nila_web_app.py
+
 import streamlit as st
 from PIL import Image
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-# Streamlit page config
+# Page configuration
 st.set_page_config(page_title="NILA Products Booking", page_icon="🌿")
+# Show banner image correctly
+st.image("Nila_banner.png", caption="Explore Our Herbal Collection 🌿", use_container_width=True)
 
-# ✅ Show banner image correctly
-st.image(r"C:\Users\prajin\Desktop\task\image.png", caption="Explore Our Herbal Collection 🌿", use_container_width=True)
 
-# ✅ Correct image path handling for products
+# Correct image path handling for products
 products = {
     "NILA Herbal Hair Oil 100ml": {
         "price": 199,
@@ -52,7 +56,6 @@ if selected_products:
             selected_quantities[product] = qty
             total_price += qty * products[product]["price"]
 
-    st.markdown(f"💰 **Total Price: ₹{total_price}**")
 else:
     st.info("Please select at least one product category to proceed.")
 
@@ -69,12 +72,12 @@ payment_screenshot = None
 if payment_method == "UPI Payment":
     payment_screenshot = st.file_uploader("📎 Upload UPI Payment Screenshot (JPG/PNG)", type=["jpg", "jpeg", "png"])
 
+st.markdown(f"💰 **Total Amount:** ₹{total_price}** ")
 st.markdown("💳 **UPI ID for Payment:** `sugunasundarajothi@okhdfcbank`")
-
-# --- Email sending function ---
+# Email sending function
 def send_order_email(name, phone, email, address, order_summary, total_price, payment_method):
-    sender_email = "sugunasundarajothi@gmail.com"
-    sender_password = "your-app-password"  # Replace securely
+    sender_email = "sugunasundarajothi@gmail.com"  
+    sender_password = "ardn uamn dhei puyq"  
     receiver_email = "suguna.sundarajothi@outlook.com"
 
     subject = "New NILA Product Order Received"
@@ -93,9 +96,10 @@ def send_order_email(name, phone, email, address, order_summary, total_price, pa
     """
 
     message = MIMEMultipart()
-    message["From"] = sender_email
+    message["From"] = email
     message["To"] = receiver_email
     message["Subject"] = subject
+
     message.attach(MIMEText(body, "plain"))
 
     try:
@@ -107,7 +111,7 @@ def send_order_email(name, phone, email, address, order_summary, total_price, pa
     except Exception as e:
         st.error(f"Error sending email: {e}")
 
-# --- Place Order Button ---
+# Place Order Button
 if st.button("Place Order"):
     if not selected_products:
         st.error("❗ Please select at least one product.")
@@ -121,24 +125,27 @@ if st.button("Place Order"):
                 price = products[product]["price"]
                 subtotal = qty * price
                 order_summary += f"{product} x {qty} = ₹{subtotal}\n"
-
-            with st.spinner("📩 Sending your order..."):
-                send_order_email(name, phone, email, address, order_summary, total_price, payment_method)
-
+            
+            send_order_email(name, phone, email, address, order_summary, total_price, payment_method)
             st.success("✅ Your order has been placed successfully!")
             st.markdown("### Order Summary:")
             st.text(order_summary)
+            st.markdown(f"**Name:** {name}")
+            st.markdown(f"**Phone:** {phone}")
+            if email:
+                st.markdown(f"**Email:** {email}")
+            st.markdown(f"**Address:** {address}")
             st.markdown(f"**Total Price:** ₹{total_price}")
             st.markdown(f"**Payment Method:** {payment_method}")
             if payment_screenshot:
-                st.image(payment_screenshot, caption="Payment Screenshot", use_container_width=True)
-            st.markdown("📞 We will confirm your order via WhatsApp or call soon.")
+                st.image(payment_screenshot, caption="Payment Screenshot", use_column_width=True)
+            st.markdown("📦 Your order will be confirmed shortly via WhatsApp or call.")
     else:
-        st.error("❗ Please fill all the required fields.")
+        st.error("❗ Please fill all required fields to place an order.")
 
 # Footer
 st.markdown("---")
-st.markdown("📧 Contact us: **suguna.sundarajothi@outlook.com**")
-st.markdown("📍 Location: **Coimbatore, India**")
-st.markdown("📸 [Instagram](https://instagram.com/nila_herbal_hairoil)")
-st.markdown("🙋‍♀️ [Support](https://instagram.com/queen_of_hills_queenpapa)")
+st.markdown("📧 Contact us at: suguna.sundarajothi@outlook.com | 📍 Coimbatore, India")
+st.markdown("📸 Follow us on [Instagram](https://instagram.com/nila_herbal_hairoil)")
+st.markdown("📸 Any problem [Instagram](https://instagram.com/queen_of_hills_queenpapa)")
+st.markdown("🌿 Experience the power of nature with NILA Herbal Hair Oil!")
